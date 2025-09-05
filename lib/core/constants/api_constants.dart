@@ -1,6 +1,6 @@
 class ApiConstants {
   // Base URL
-  static const String apiBaseUrl = 'https://api.traio.com/v1';
+  static const String apiBaseUrl = 'https://dcc.progressnepal.com';
 
   // Timeouts (in milliseconds)
   static const int connectTimeout = 5000;
@@ -14,7 +14,15 @@ class ApiConstants {
   };
 
   // Auth endpoints
-  static const String login = '/auth/login';
-  static const String register = '/auth/register';
-  static const String logout = 'auth/logout';
+  static const String login = '/api/login';
+  static const String register = '/api/register';
+  static const String logout = '/api/logout';
+  static const String refreshToken = '/api/refresh';
+  static const String currentUser = '/users/me';
+
+  // Headers
+  static const String contentType = 'application/json';
+  static const String accept = 'application/json';
+  static const String authorization = 'Authorization';
+  static const String bearer = 'Bearer';
 }

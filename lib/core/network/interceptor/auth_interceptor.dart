@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:trailo_pro/core/constants/storage_keys.dart';
-
+import 'package:trailo_pro/core/constants/api_constants.dart';
+import 'package:trailo_pro/features/authentication/domain/entities/login/auth_response.dart';
 import '../../storage/local_storage.dart';
 
 class AuthInterceptor extends Interceptor {
@@ -9,10 +9,11 @@ class AuthInterceptor extends Interceptor {
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
     // Add auth token to requests
-    final String? token =await SecureStorage.getAccessToken();
-        
+    final String? token = await SecureStorage.getAccessToken();
+
     if (token != null && token.isNotEmpty) {
-      options.headers['Authorization'] = 'Bearer $token';
+      options.headers[ApiConstants.authorization] =
+          '${ApiConstants.bearer} $token';
     }
 
     handler.next(options);
@@ -22,7 +23,44 @@ class AuthInterceptor extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) async {
     // Handle token expiry
     if (err.response?.statusCode == 401) {
-      // Clear expired token
+      // Token expired, try to refetch
+      try {
+        final refreshToken = await SecureStorage.getRefreshToken();
+        if (refreshToken != null) {
+          final dio = Dio();
+          final Response response = await dio.post(
+            '${ApiConstants.apiBaseUrl}${ApiConstants.refreshToken}',
+            data: {'refresh_token': refreshToken},
+          );
+
+          // Save new tokens
+          final authResponse = AuthResponse.fromJson(response.data);
+          await SecureStorage.saveTokens(
+            accessToken: authResponse.accessToken,
+            refreshToken: authResponse.refreshToken,
+            userId: authResponse.user.id,
+          );
+
+          // Retry original request with new token
+          err.requestOptions.headers[ApiConstants.authorization] =
+              '${ApiConstants.apiBaseUrl}${authResponse.accessToken}';
+
+          final cloneReq = await dio.request(
+            err.requestOptions.path,
+            options: Options(
+              method: err.requestOptions.method,
+              headers: err.requestOptions.headers,
+            ),
+            data: err.requestOptions.data,
+            queryParameters: err.requestOptions.queryParameters,
+          );
+
+          return handler.resolve(cloneReq);
+        }
+      } catch (e) {
+        // Refresh failed, clear tokens
+        await SecureStorage.clearAll();
+      }
       await SecureStorage.clearAll();
     }
 

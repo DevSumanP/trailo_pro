@@ -1,17 +1,21 @@
-
-import 'package:dio/dio.dart';
+// lib/features/authentication/presentation/provider/auth_provider.dart
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:trailo_pro/features/authentication/data/datasources/auth_api_service.dart';
 import 'package:trailo_pro/features/authentication/data/repositories/auth_repository_impl.dart';
 import 'package:trailo_pro/features/authentication/domain/entities/auth_state/auth_state.dart';
 import 'package:trailo_pro/features/authentication/domain/entities/login/login_request.dart';
-import 'package:trailo_pro/features/authentication/domain/entities/user/user.dart';
 import 'package:trailo_pro/features/authentication/domain/repositories/auth_repository.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/network/dio_api_service.dart';
 
-final authRepositoryProvider = Provider<AuthRepository>((ref) {
+final authApiServiceProvider = Provider<AuthApiService>((ref) {
   final dio = ref.watch(dioProvider);
-  return AuthRepositoryImpl(dio);
+  return AuthApiService(dio);
+});
+
+final authRepositoryProvider = Provider<AuthRepository>((ref) {
+  final apiService = ref.watch(authApiServiceProvider);
+  return AuthRepositoryImpl(apiService);
 });
 
 final authNotifierProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
@@ -65,7 +69,22 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
   
   Future<void> logout() async {
-    await _repository.logout();
-    state = const AuthState.unauthenticated();
+    state = const AuthState.loading();
+    try {
+      await _repository.logout();
+      state = const AuthState.unauthenticated();
+    } catch (e) {
+      // Even if logout fails on server, clear local state
+      state = const AuthState.unauthenticated();
+    }
+  }
+
+  Future<void> refreshToken() async {
+    try {
+      final response = await _repository.refreshToken();
+      state = AuthState.authenticated(response.user);
+    } catch (e) {
+      state = const AuthState.unauthenticated();
+    }
   }
 }
