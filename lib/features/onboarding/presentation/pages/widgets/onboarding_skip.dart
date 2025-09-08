@@ -15,7 +15,7 @@ class OnBoardingSkip extends StatelessWidget {
       top: DeviceUtils.getAppBarHeight(),
       right: AppSizes.defaultSpace - 24,
       child: TextButton(
-        onPressed: () => onSkip,
+        onPressed: onSkip,
         child: Text(
           'Skip',
           style: Theme.of(context).textTheme.labelMedium,

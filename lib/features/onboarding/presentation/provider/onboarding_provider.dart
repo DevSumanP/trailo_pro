@@ -1,6 +1,7 @@
 // State class to hold the onbparding page index
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:trailo_pro/features/authentication/presentation/pages/signin_screen.dart';
 
 class OnboardingState {
   final PageController pageController;
@@ -29,13 +30,20 @@ class OnboardingNotifier extends StateNotifier<OnboardingState> {
     state = state.copyWith(currentPage: index);
   }
 
-  void nextPage() {
+  void nextPage(BuildContext context) {
     final nextPage = state.currentPage + 1;
     if (nextPage < 3) {
       state.pageController.animateToPage(nextPage,
           duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
       updatePageIndicator(nextPage);
+    } else {
+      // Navigate to next screen when onboarding is complete
+      _navigateToNextScreen(context);
     }
+  }
+
+  void _navigateToNextScreen(BuildContext context){
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SignInScreen()));
   }
 
   void skipToLastPage() {

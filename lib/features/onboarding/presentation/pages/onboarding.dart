@@ -5,11 +5,9 @@ import 'package:trailo_pro/core/constants/colors.dart';
 import 'package:trailo_pro/features/onboarding/presentation/provider/onboarding_provider.dart';
 
 import 'widgets/onboarding_button.dart';
-import 'widgets/onboarding_navigation.dart';
 import 'widgets/onboarding_page.dart';
-import 'widgets/onboarding_skip.dart';
 
-class OnBoardingScreen extends ConsumerWidget  {
+class OnBoardingScreen extends ConsumerWidget {
   const OnBoardingScreen({super.key});
 
   @override
@@ -18,42 +16,46 @@ class OnBoardingScreen extends ConsumerWidget  {
     final controller = ref.read(onboardingProvider.notifier);
     return Scaffold(
       backgroundColor: AppColors.white,
-      body: Stack(children: [
-        // Horizontal Scrollable Page
-        PageView(
-          controller: state.pageController,
-          onPageChanged: controller.updatePageIndicator,
-          children: const [
-            OnboardingPage(
-              title: "Let's book your train with just a tap",
-              image: AssetsConstant.onBoardingImage1,
-              subTitle:
-                  'It is a long established fact that the a reader will be distracted by the readable content.',
-            ),
-            OnboardingPage(
-              title: 'Book your ticket and enjoy your trip',
-              image: AssetsConstant.onBoardingImage2,
-              subTitle:
-                  'It is a long established fact that the a reader will be distracted by the readable content.',
-            ),
-            OnboardingPage(
-              title: 'We make your train journey very easy',
-              image: AssetsConstant.onBoardingImage3,
-              subTitle:
-                  'It is a long established fact that the a reader will be distracted by the readable content.',
-            ),
-          ],
-        ),
+      body: Stack(
+        children: [
+          // Horizontal Scrollable Page
+          PageView(
+            controller: state.pageController,
+            onPageChanged: controller.updatePageIndicator,
+            children: const [
+              OnboardingPage(
+                title: "Let's book your train with just a tap",
+                image: AssetsConstant.onBoardingImage1,
+                subTitle:
+                    'It is a long established fact that the a reader will be distracted by the readable content.',
+              ),
+              OnboardingPage(
+                title: 'Book your ticket and enjoy your trip',
+                image: AssetsConstant.onBoardingImage2,
+                subTitle:
+                    'It is a long established fact that the a reader will be distracted by the readable content.',
+              ),
+              OnboardingPage(
+                title: 'We make your train journey very easy',
+                image: AssetsConstant.onBoardingImage3,
+                subTitle:
+                    'It is a long established fact that the a reader will be distracted by the readable content.',
+              ),
+            ],
+          ),
 
-        // Skip Button
-        //  OnBoardingSkip(onSkip: controller.skipToLastPage,),
+          // Skip Button
+          //  OnBoardingSkip(onSkip: controller.skipToLastPage,),
 
-        // Smooth Page Indicator
-        //  OnBoardingNavigation(controller: state.pageController),
+          // Smooth Page Indicator
+          //  OnBoardingNavigation(controller: state.pageController),
 
-        // Circular Button
-         OnBoardingButton(onNext: controller.nextPage,),
-      ],),
+          // Circular Button
+          OnBoardingButton(
+            onNext: () => controller.nextPage(context),
+          ),
+        ],
+      ),
     );
   }
 }

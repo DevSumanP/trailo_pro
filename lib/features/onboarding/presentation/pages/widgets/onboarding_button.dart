@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
 
 import '../../../../../core/constants/app_sizes.dart';
 import '../../../../../core/constants/colors.dart';
@@ -19,7 +18,7 @@ class OnBoardingButton extends StatelessWidget {
         width: DeviceUtils.getScreenWidth(context),
         height: AppSizes.buttonHeight,
         child: ElevatedButton(
-          onPressed: () => onNext,
+          onPressed: onNext,
           style: ElevatedButton.styleFrom(
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppSizes.buttonRadius)),

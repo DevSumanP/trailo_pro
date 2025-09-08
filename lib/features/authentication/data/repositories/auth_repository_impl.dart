@@ -18,9 +18,9 @@ class AuthRepositoryImpl implements AuthRepository {
       final authResponse = await _apiService.login(request);
 
       await SecureStorage.saveTokens(
-        accessToken: authResponse.accessToken,
-        refreshToken: authResponse.refreshToken,
-        userId: authResponse.user.id,
+        accessToken: authResponse.data.accessToken,
+        refreshToken: authResponse.data.accessToken,
+        userId: authResponse.data.user.id.toString(),
       );
 
       return authResponse;
@@ -46,9 +46,9 @@ class AuthRepositoryImpl implements AuthRepository {
       );
 
       await SecureStorage.saveTokens(
-        accessToken: authResponse.accessToken,
-        refreshToken: authResponse.refreshToken,
-        userId: authResponse.user.id,
+        accessToken: authResponse.data.accessToken,
+        refreshToken: authResponse.data.accessToken,
+        userId: authResponse.data.user.id.toString(),
       );
 
       return authResponse;
@@ -87,9 +87,9 @@ class AuthRepositoryImpl implements AuthRepository {
       );
 
       await SecureStorage.saveTokens(
-        accessToken: authResponse.accessToken,
-        refreshToken: authResponse.refreshToken,
-        userId: authResponse.user.id,
+        accessToken: authResponse.data.accessToken,
+        refreshToken: authResponse.data.accessToken,
+        userId: authResponse.data.user.id.toString(),
       );
 
       return authResponse;

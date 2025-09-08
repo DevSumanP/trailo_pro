@@ -36,14 +36,14 @@ class AuthInterceptor extends Interceptor {
           // Save new tokens
           final authResponse = AuthResponse.fromJson(response.data);
           await SecureStorage.saveTokens(
-            accessToken: authResponse.accessToken,
-            refreshToken: authResponse.refreshToken,
-            userId: authResponse.user.id,
+            accessToken: authResponse.data.accessToken,
+            refreshToken: authResponse.data.accessToken,
+            userId: authResponse.data.user.id.toString(),
           );
 
           // Retry original request with new token
           err.requestOptions.headers[ApiConstants.authorization] =
-              '${ApiConstants.apiBaseUrl}${authResponse.accessToken}';
+              '${ApiConstants.apiBaseUrl}${authResponse.data.accessToken}';
 
           final cloneReq = await dio.request(
             err.requestOptions.path,

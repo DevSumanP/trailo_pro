@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class DeviceUtils {
+
   static double getScreenHeight(BuildContext context){
     return MediaQuery.of(context).size.height;
   } 
@@ -26,9 +27,15 @@ class DeviceUtils {
     FocusScope.of(context).requestFocus(FocusNode());
   }
 
-  static Future<void> setStatusBarColor(Color color) async {
+  static Future<void> setStatusBarColor(Color? color) async {
     SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(statusBarColor: color),
+      SystemUiOverlayStyle(statusBarColor: Colors.white),
+    );
+  }
+
+  static Future<void> setBottomNavBarColor(Color? color) async {
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(systemNavigationBarColor: Colors.white),
     );
   }
 

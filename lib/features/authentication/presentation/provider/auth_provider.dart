@@ -51,7 +51,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     try {
       final request = LoginRequest(email: email, password: password);
       final response = await _repository.login(request);
-      state = AuthState.authenticated(response.user);
+      state = AuthState.authenticated(response.data.user);
     } catch (e) {
       state = AuthState.error(e.toString());
     }
@@ -62,7 +62,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     
     try {
       final response = await _repository.register(name, email, password);
-      state = AuthState.authenticated(response.user);
+      state = AuthState.authenticated(response.data.user);
     } catch (e) {
       state = AuthState.error(e.toString());
     }
@@ -82,9 +82,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
   Future<void> refreshToken() async {
     try {
       final response = await _repository.refreshToken();
-      state = AuthState.authenticated(response.user);
+      state = AuthState.authenticated(response.data.user);
     } catch (e) {
       state = const AuthState.unauthenticated();
     }
   }
+
 }
